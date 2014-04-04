@@ -31,5 +31,9 @@ module Aladtec
     def configure
       yield self
     end
+
+    def options
+      Hash[ * VALID_CONFIG_KEYS.map { |key| [key, public_send(key)] }.flatten ]
+    end
   end
 end
