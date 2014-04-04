@@ -27,5 +27,9 @@ module AladtecClient
       self.acc_key    = DEFAULT_ACC_KEY
       self.cus_id     = DEFAULT_CUS_ID
     end
+
+    def configure
+      yield self
+    end
   end
 end
