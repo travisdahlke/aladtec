@@ -1,3 +1,3 @@
-require 'aladtec_client'
+require 'aladtec'
 require 'rspec'
 require 'webmock/rspec'

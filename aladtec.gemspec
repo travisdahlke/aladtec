@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'aladtec_client/version'
+require 'aladtec/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "aladtec_client"
-  spec.version       = AladtecClient::VERSION
+  spec.name          = "aladtec"
+  spec.version       = Aladtec::VERSION
   spec.authors       = ["Travis Dahlke"]
   spec.email         = ["dahlke.travis@gmail.com"]
   spec.summary       = %q{Client library for the Aladtec API}
