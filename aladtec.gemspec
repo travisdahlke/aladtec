@@ -22,6 +22,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "webmock"
+  spec.add_development_dependency "pry"
 
-  spec.add_dependency "multi_xml" ,"~> 0.5.5"
+  spec.add_dependency "rest-client", "~> 1.6.7"
+  spec.add_dependency "happymapper", "~> 0.4.1"
 end
