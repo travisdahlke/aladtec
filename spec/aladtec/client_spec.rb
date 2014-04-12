@@ -24,6 +24,39 @@ describe Aladtec::Client do
     end
   end
 
+  describe "#events" do
+    let(:events) { subject.events(begin_date: Date.today)}
+    before(:each) do
+      stub_request(:post, "https://secure.emsmanager.net/api/index.php").
+              with(body: hash_including({cmd: "getEvents"})).
+              to_return(body: fixture('get_events.xml'))
+    end
+    it "returns a list of events" do
+      expect(events.length).to eq(2)
+    end
+
+    let(:event) { events.first }
+    it "creates events with title" do
+      expect(event.title).to eq("Game Night")
+    end
+
+    it "creates events with a description" do
+      expect(event.description).to eq("Play games until the sun comes up!")
+    end
+
+    it "creates events with location" do
+      expect(event.location).to eq("Public Library")
+    end
+
+    it "creates events with begin date" do
+      expect(event.begin).to eq(Time.parse("2012-04-20 00:00:00 -0500"))
+    end
+
+    it "creates events with end date" do
+      expect(event.end).to eq(Time.parse("2012-04-21 15:30:00 UTC"))
+    end
+  end
+
   context 'with module configuration' do
     before(:each) do
       Aladtec.configure do |config|
