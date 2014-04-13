@@ -17,10 +17,10 @@ describe Aladtec::Client do
     end
 
     let(:john) { members.first }
-    it "creates members with names" do
+    it "returns members with names" do
       expect(john.name).to eq("John Anderson")
     end
-    it "creates members with ids" do
+    it "returns members with ids" do
       expect(john.id).to eq(32)
     end
   end
@@ -79,7 +79,7 @@ describe Aladtec::Client do
     end
   end
 
-  describe "#scheduled_time_now" do
+  describe "#scheduled_now" do
     let(:schedules) { subject.scheduled_now }
     before(:each) do
       stub_request(:post, "https://secure.emsmanager.net/api/index.php").
@@ -100,12 +100,18 @@ describe Aladtec::Client do
     end
   end
 
-  describe "#scheduled_time_ranges" do
+  describe "#scheduled_range" do
     let(:ranges) { subject.scheduled_range(begin_time: Time.now, end_time: Time.now) }
     before(:each) do
       stub_request(:post, "https://secure.emsmanager.net/api/index.php").
               with(body: hash_including({cmd: "getScheduledTimeRanges"})).
               to_return(body: fixture('get_scheduled_time_ranges.xml'))
+      stub_request(:post, "https://secure.emsmanager.net/api/index.php").
+              with(body: hash_including({cmd: "getMembers"})).
+              to_return(body: fixture('get_members.xml'))
+      stub_request(:post, "https://secure.emsmanager.net/api/index.php").
+              with(body: hash_including({cmd: "getSchedules"})).
+              to_return(body: fixture('get_schedules.xml'))
     end
     it "returns a list of scheduled ranges" do
       expect(ranges.length).to eq(3)

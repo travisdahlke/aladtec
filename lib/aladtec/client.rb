@@ -3,6 +3,7 @@ require 'aladtec/event'
 require 'aladtec/member'
 require 'aladtec/range'
 require 'aladtec/schedule'
+require 'aladtec/range_denormalizer'
 
 module Aladtec
   class Client
@@ -64,7 +65,11 @@ module Aladtec
       bt = bt.is_a?(Time) ? bt.utc.iso8601 : Time.parse(bt).utc.iso8601
       et = et.is_a?(Time) ? et.utc.iso8601 : Time.parse(et).utc.iso8601
       response = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1)
-      Range.parse(response.body)
+      denormalize_ranges(Range.parse(response.body))
+    end
+
+    def denormalize_ranges(ranges, klass = RangeDenormalizer)
+      klass.new(schedules: schedules, members: members).denormalize(ranges)
     end
 
     def auth_params
