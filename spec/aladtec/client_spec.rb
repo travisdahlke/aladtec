@@ -6,16 +6,17 @@ describe Aladtec::Client do
   end
 
   describe "#members" do
+    let(:members) { subject.members }
     before(:each) do
       stub_request(:post, "https://secure.emsmanager.net/api/index.php").
               with(body: hash_including({cmd: "getMembers"})).
               to_return(body: fixture('get_members.xml'))
     end
     it "returns a list of members" do
-      expect(subject.members.length).to eq(3)
+      expect(members.length).to eq(3)
     end
 
-    let(:john) { subject.members.first }
+    let(:john) { members.first }
     it "creates members with names" do
       expect(john.name).to eq("John Anderson")
     end
@@ -36,24 +37,99 @@ describe Aladtec::Client do
     end
 
     let(:event) { events.first }
-    it "creates events with title" do
+    it "returns events with title" do
       expect(event.title).to eq("Game Night")
     end
 
-    it "creates events with a description" do
+    it "returns events with a description" do
       expect(event.description).to eq("Play games until the sun comes up!")
     end
 
-    it "creates events with location" do
+    it "returns events with location" do
       expect(event.location).to eq("Public Library")
     end
 
-    it "creates events with begin date" do
+    it "returns events with begin date" do
       expect(event.begin).to eq(Time.parse("2012-04-20 00:00:00 -0500"))
     end
 
-    it "creates events with end date" do
+    it "returns events with end date" do
       expect(event.end).to eq(Time.parse("2012-04-21 15:30:00 UTC"))
+    end
+  end
+
+  describe "#schedules" do
+    let(:schedules) { subject.schedules }
+    before(:each) do
+      stub_request(:post, "https://secure.emsmanager.net/api/index.php").
+              with(body: hash_including({cmd: "getSchedules"})).
+              to_return(body: fixture('get_schedules.xml'))
+    end
+    it "returns a list of schedules" do
+      expect(schedules.length).to eq(5)
+    end
+
+    let(:schedule) { schedules.first }
+    it "returns schedules with names" do
+      expect(schedule.name).to eq("Sample BLS - 24/48")
+    end
+
+    it "returns schedules with ids" do
+      expect(schedule.id).to eq(5)
+    end
+  end
+
+  describe "#scheduled_time_now" do
+    let(:schedules) { subject.scheduled_now }
+    before(:each) do
+      stub_request(:post, "https://secure.emsmanager.net/api/index.php").
+              with(body: hash_including({cmd: "getScheduledTimeNow"})).
+              to_return(body: fixture('get_scheduled_time_now.xml'))
+    end
+    it "returns a list of scheduled time now" do
+      expect(schedules.length).to eq(2)
+    end
+
+    let(:schedule) { schedules.first }
+    it "returns schedules with ids" do
+      expect(schedule.id).to eq(5)
+    end
+
+    it "returns schedules with positions" do
+      expect(schedule.positions.length).to eq(2)
+    end
+  end
+
+  describe "#scheduled_time_ranges" do
+    let(:ranges) { subject.scheduled_range(begin_time: Time.now, end_time: Time.now) }
+    before(:each) do
+      stub_request(:post, "https://secure.emsmanager.net/api/index.php").
+              with(body: hash_including({cmd: "getScheduledTimeRanges"})).
+              to_return(body: fixture('get_scheduled_time_ranges.xml'))
+    end
+    it "returns a list of scheduled ranges" do
+      expect(ranges.length).to eq(3)
+    end
+
+    let(:range) { ranges.first }
+    it "returns ranges with a begin time" do
+      expect(range.begin).to eq(Time.parse("2010-03-20T03:30:00Z"))
+    end
+
+    it "returns ranges with a end time" do
+      expect(range.end).to eq(Time.parse("2010-03-20T11:30:00Z"))
+    end
+
+    it "returns ranges with a member id" do
+      expect(range.member.id).to eq(42)
+    end
+
+    it "returns ranges with a position id" do
+      expect(range.position.id).to eq(1)
+    end
+
+    it "returns ranges with a schedule id" do
+      expect(range.schedule.id).to eq(5)
     end
   end
 

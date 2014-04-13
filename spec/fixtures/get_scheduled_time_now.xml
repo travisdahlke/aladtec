@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results version="3.1.1" accessTime="2012-03-15T15:52:01Z">
+<schedules>
+<schedule id="5">
+<positions>
+<position id="1">
+<member id="32" />
+</position>
+<position id="2">
+<member id="64" />
+</position>
+</positions>
+</schedule>
+<schedule id="9">
+<positions>
+<position id="4" />
+</positions>
+</schedule>
+</schedules>
+</results>
+

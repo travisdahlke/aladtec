@@ -1,6 +1,9 @@
 require 'rest-client'
 require 'aladtec/event'
 require 'aladtec/member'
+require 'aladtec/range'
+require 'aladtec/schedule'
+
 module Aladtec
   class Client
 
@@ -35,6 +38,33 @@ module Aladtec
     def members
       response = request(:getMembers)
       Member.parse(response.body)
+    end
+
+    # Public: Get a list of schedules
+    #
+    def schedules
+      response = request(:getSchedules, isp: 1)
+      Schedule.parse(response.body)
+    end
+
+    # Public: Get list of members scheduled now
+    def scheduled_now
+      response = request(:getScheduledTimeNow, isp: 1)
+      Schedule.parse(response.body)
+    end
+
+    # Public: Get list of members scheduled in a time range
+    #
+    # options - The Hash options used to refine the selection (default: {}):
+    #           :begin_time - The begin time to return events for (required).
+    #           :end_time   - The end time to return events for (required).
+    def scheduled_range(options = {})
+      bt = options.fetch(:begin_time) { raise "You must supply a :begin_time!"}
+      et = options.fetch(:end_time) { raise "You must supply an :end_time!"}
+      bt = bt.is_a?(Time) ? bt.utc.iso8601 : Time.parse(bt).utc.iso8601
+      et = et.is_a?(Time) ? et.utc.iso8601 : Time.parse(et).utc.iso8601
+      response = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1)
+      Range.parse(response.body)
     end
 
     def auth_params

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results version="3.1.1" accessTime="2012-03-15T15:52:01Z">
+<ranges>
+<range>
+<schedule id="5" />
+<position id="1" />
+<member id="42" />
+<begin>2010-03-20T03:30:00Z</begin>
+<end>2010-03-20T11:30:00Z</end>
+</range>
+<range>
+<schedule id="5" />
+<position id="2" />
+<member id="42" />
+<begin>2010-03-20T11:30:00Z</begin>
+<end>2010-03-20T15:30:00Z</end>
+</range>
+<range>
+<schedule id="6" />
+<position id="9" />
+<member id="32" />
+<begin>2010-03-20T07:30:00Z</begin>
+<end>2010-03-21T21:30:00Z</end>
+</range>
+</ranges>
+</results>
+
