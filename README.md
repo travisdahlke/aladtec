@@ -1,5 +1,5 @@
 # Aladtec
-
+[![Build Status](https://travis-ci.org/travisdahlke/aladtec.svg)](https://travis-ci.org/travisdahlke/aladtec)
 TODO: Write a gem description
 
 ## Installation
