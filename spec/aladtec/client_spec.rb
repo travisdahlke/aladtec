@@ -50,7 +50,7 @@ describe Aladtec::Client do
     end
 
     it "returns events with begin date" do
-      expect(event.begin).to eq(Time.parse("2012-04-20 00:00:00 -0500"))
+      expect(event.begin).to eq(Time.parse("2012-04-20"))
     end
 
     it "returns events with end date" do
