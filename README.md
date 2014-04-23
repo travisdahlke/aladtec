@@ -1,7 +1,7 @@
 # Aladtec
 [![Build Status](https://travis-ci.org/travisdahlke/aladtec.svg)](https://travis-ci.org/travisdahlke/aladtec)
 
-TODO: Write a gem description
+A Ruby client library for the Aladtec FireManager API.
 
 ## Installation
 
@@ -23,7 +23,7 @@ TODO: Write usage instructions here
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/aladtec/fork )
+1. Fork it ( http://github.com/travisdahlke/aladtec/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
