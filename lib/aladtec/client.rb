@@ -62,8 +62,8 @@ module Aladtec
     def scheduled_range(options = {})
       bt = options.fetch(:begin_time) { raise "You must supply a :begin_time!"}
       et = options.fetch(:end_time) { raise "You must supply an :end_time!"}
-      bt = bt.is_a?(Time) ? bt.utc.iso8601 : Time.parse(bt).utc.iso8601
-      et = et.is_a?(Time) ? et.utc.iso8601 : Time.parse(et).utc.iso8601
+      bt = bt.is_a?(Time) ? bt.clone.utc.iso8601 : Time.parse(bt).utc.iso8601
+      et = et.is_a?(Time) ? et.clone.utc.iso8601 : Time.parse(et).utc.iso8601
       response = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1)
       denormalize_ranges(Range.parse(response.body))
     end
