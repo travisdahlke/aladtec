@@ -1,4 +1,5 @@
 require_relative File.join('..','spec_helper')
+require 'ostruct'
 
 describe Aladtec::RangeDenormalizer do
   let(:members) {[OpenStruct.new(id: 1, name: "Joe Schmoe"), OpenStruct.new(id: 2, name: "Ann Perkins")]}
