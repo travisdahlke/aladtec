@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'aladtec/event'
 require 'aladtec/member'
+require 'aladtec/authentication'
 require 'aladtec/range'
 require 'aladtec/schedule'
 require 'aladtec/range_denormalizer'
@@ -37,8 +38,15 @@ module Aladtec
     # Public: Get a list of members
     #
     def members
-      response = request(:getMembers)
+      response = request(:getMembers, ia: 'all')
       Member.parse(response.body)
+    end
+
+    # Public: Authenticate member
+    #
+    def auth(username, password)
+      response = request(:authenticateMember, memun: username, mempw: password)
+      Authentication.parse(response.body)
     end
 
     # Public: Get a list of schedules
