@@ -1,3 +1,4 @@
+require 'kconv'
 require 'rest-client'
 require 'aladtec/event'
 require 'aladtec/member'
@@ -33,6 +34,8 @@ module Aladtec
       end
       response = request(:getEvents, bd: bd, ed: ed)
       Event.parse(response.body)
+    rescue LibXML::XML::Error
+      Event.parse(Kconv.toutf8(response.body))
     end
 
     # Public: Get a list of members
