@@ -84,7 +84,7 @@ module Aladtec
     end
 
     def auth_params
-      {accid: acc_id, acckey: acc_key, cusid: cus_id}
+      {accid: acc_id, acckey: acc_key}
     end
     private :auth_params
 

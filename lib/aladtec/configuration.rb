@@ -1,7 +1,7 @@
 module Aladtec
   module Configuration
     VALID_CONNECTION_KEYS = [:endpoint, :method, :user_agent].freeze
-    VALID_OPTIONS_KEYS    = [:acc_id, :acc_key, :cus_id].freeze
+    VALID_OPTIONS_KEYS    = [:acc_id, :acc_key].freeze
     VALID_CONFIG_KEYS     = VALID_CONNECTION_KEYS + VALID_OPTIONS_KEYS
 
     DEFAULT_ENDPOINT    = 'https://secure.emsmanager.net/api/index.php'
@@ -10,7 +10,6 @@ module Aladtec
 
     DEFAULT_ACC_ID       = nil
     DEFAULT_ACC_KEY      = nil
-    DEFAULT_CUS_ID       = nil
 
     attr_accessor *VALID_CONFIG_KEYS
 
@@ -25,7 +24,6 @@ module Aladtec
 
       self.acc_id     = DEFAULT_ACC_ID
       self.acc_key    = DEFAULT_ACC_KEY
-      self.cus_id     = DEFAULT_CUS_ID
     end
 
     def configure

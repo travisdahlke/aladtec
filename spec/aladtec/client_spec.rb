@@ -165,7 +165,6 @@ describe Aladtec::Client do
       {
         :acc_id     => 'ai',
         :acc_key    => 'ak',
-        :cus_id     => 'ci',
         :endpoint   => 'ep',
         :user_agent => 'ua',
         :method     => 'hm',
