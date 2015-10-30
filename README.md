@@ -29,13 +29,16 @@ Configure the gem with your credentials:
     end
 
 Get members
+
     client = Aladtec::Client.new
     client.members
 
 Get events
+
     client.events(begin_date: Date.today)
 
 Get schedules
+
     client.schedules
 
 Refer to the [documentation](http://www.rubydoc.info/github/travisdahlke/aladtec) for more detailed usage.
