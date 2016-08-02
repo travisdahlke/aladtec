@@ -70,12 +70,14 @@ module Aladtec
     # options - The Hash options used to refine the selection (default: {}):
     #           :begin_time - The begin time to return events for (required).
     #           :end_time   - The end time to return events for (required).
+    #           :sch        - Array of schedule ids to fetch
     def scheduled_range(options = {})
       bt = options.fetch(:begin_time) { raise "You must supply a :begin_time!"}
       et = options.fetch(:end_time) { raise "You must supply an :end_time!"}
+      sch = Array(options.fetch(:sch, "all")).join(",")
       bt = bt.is_a?(Time) ? bt.clone.utc.iso8601 : Time.parse(bt).utc.iso8601
       et = et.is_a?(Time) ? et.clone.utc.iso8601 : Time.parse(et).utc.iso8601
-      response = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1)
+      response = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1, sch: sch)
       denormalize_ranges(Range.parse(response.body))
     end
 
