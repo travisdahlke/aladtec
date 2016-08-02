@@ -60,8 +60,8 @@ module Aladtec
     end
 
     # Public: Get list of members scheduled now
-    def scheduled_now
-      response = request(:getScheduledTimeNow, isp: 1)
+    def scheduled_now(options = {})
+      response = request(:getScheduledTimeNow, {isp: 1}.merge(options))
       Schedule.parse(response.body)
     end
 
