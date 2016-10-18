@@ -1,11 +1,10 @@
-require 'happymapper'
-
 module Aladtec
   class Member
-    include HappyMapper
+    attr_accessor :id, :name
 
-    tag 'member'
-    attribute :id, Integer
-    element :name, String
+    def initialize(args = {})
+      @id = args["id"].to_i
+      @name = args["name"]
+    end
   end
 end

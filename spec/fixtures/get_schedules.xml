@@ -1,1 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?><results accessTime="2012-03-15T15:52:01Z" version="3.1.1">    <schedules>        <schedule id="5">            <name>Sample BLS - 24/48</name>        </schedule>        <schedule id="6">            <name>Medic 5</name>        </schedule>        <schedule id="7">            <name>Wheelchair Van 12</name>        </schedule>        <schedule id="8">            <name>Air Crew</name>        </schedule>        <schedule id="9">            <name>Dispatch</name>        </schedule>    </schedules></results>
+<?xml version="1.0" encoding="UTF-8"?>
+<results version="3.5.1" accessTime="2016­03­03T15:52:01Z">
+  <schedules>
+    <schedule id="5">
+      <name>Sample BLS - 24/48</name>
+      <positions>
+        <position id="1">
+          <name>EMT</name>
+        </position>
+        <position id="2">
+          <name>Driver</name>
+        </position>
+      </positions>
+    </schedule>
+    <schedule id="6">
+      <name>Medic 5</name>
+      <positions>
+        <position id="9">
+          <name>Medic</name>
+        </position>
+        <position id="8">
+          <name>EMT</name>
+        </position>
+      </positions>
+    </schedule>
+    <schedule id="7">
+      <name>Wheelchair Van 12</name>
+      <positions>
+        <position id="14">
+          <name>Driver</name>
+        </position>
+      </positions>
+    </schedule>
+    <schedule id="8">
+      <name>Air Crew</name>
+      <positions>
+        <position id="10">
+          <name>Medic</name>
+        </position>
+        <position id="11">
+          <name>EMT</name>
+        </position>
+        <position id="12">
+          <name>Pilot</name>
+        </position>
+      </positions>
+    </schedule>
+    <schedule id="9">
+      <name>Dispatch</name>
+      <positions>
+        <position id="4">
+          <name>Dispatcher</name>
+        </position>
+      </positions>
+    </schedule>
+  </schedules>
+</results>

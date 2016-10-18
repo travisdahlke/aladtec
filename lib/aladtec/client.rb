@@ -1,5 +1,5 @@
-require 'kconv'
 require 'rest-client'
+require 'multi_xml'
 require 'aladtec/event'
 require 'aladtec/member'
 require 'aladtec/authentication'
@@ -33,36 +33,39 @@ module Aladtec
         ed = ed.is_a?(Date) ? ed.iso8601 : Date.parse(ed).iso8601
       end
       response = request(:getEvents, bd: bd, ed: ed)
-      Event.parse(response.body)
-    rescue LibXML::XML::Error
-      Event.parse(Kconv.toutf8(response.body))
+      body = MultiXml.parse(response.body)
+      body["results"]["events"]["event"].map{|e| Event.new(e)}
     end
 
     # Public: Get a list of members
     #
     def members
       response = request(:getMembers, ia: 'all')
-      Member.parse(response.body)
+      body = MultiXml.parse(response.body)
+      body["results"]["members"]["member"].map{|m| Member.new(m)}
     end
 
     # Public: Authenticate member
     #
     def auth(username, password)
       response = request(:authenticateMember, memun: username, mempw: password)
-      Authentication.parse(response.body)
+      body = MultiXml.parse(response.body)
+      Authentication.new(body["results"]["authentication"])
     end
 
     # Public: Get a list of schedules
     #
     def schedules
       response = request(:getSchedules, isp: 1)
-      Schedule.parse(response.body)
+      body = MultiXml.parse(response.body)
+      body["results"]["schedules"]["schedule"].map{|m| Schedule.new(m)}
     end
 
     # Public: Get list of members scheduled now
     def scheduled_now(options = {})
       response = request(:getScheduledTimeNow, {isp: 1}.merge(options))
-      Schedule.parse(response.body)
+      body = MultiXml.parse(response.body)
+      body["results"]["schedules"]["schedule"].map{|m| Schedule.new(m)}
     end
 
     # Public: Get list of members scheduled in a time range
@@ -78,7 +81,9 @@ module Aladtec
       bt = bt.is_a?(Time) ? bt.clone.utc.iso8601 : Time.parse(bt).utc.iso8601
       et = et.is_a?(Time) ? et.clone.utc.iso8601 : Time.parse(et).utc.iso8601
       response = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1, sch: sch)
-      denormalize_ranges(Range.parse(response.body))
+      body = MultiXml.parse(response.body)
+      ranges = body["results"]["ranges"]["range"].map{|r| Range.new(r)}
+      denormalize_ranges(ranges)
     end
 
     def denormalize_ranges(ranges, klass = RangeDenormalizer)

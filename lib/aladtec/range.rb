@@ -1,17 +1,18 @@
-require 'happymapper'
 require 'aladtec/schedule'
 require 'aladtec/position'
 require 'aladtec/member'
 
 module Aladtec
   class Range
-    include HappyMapper
+    attr_accessor :schedule, :position, :member, :begin, :end
 
-    tag 'range'
-    has_one :schedule, Schedule
-    has_one :position, Position
-    has_one :member, Member
-    element :begin, Time
-    element :end, Time
+    def initialize(args = {})
+      @member = Member.new(args["member"])
+      @position = Position.new(args["position"])
+      @schedule = Schedule.new(args["schedule"])
+      @begin = Time.parse(args["begin"]) if args["begin"]
+      @end = Time.parse(args["end"]) if args["end"]
+    end
+
   end
 end

@@ -25,5 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
 
   spec.add_dependency "rest-client", "~> 1.6.7"
-  spec.add_dependency "happymapper", "~> 0.4.1"
+  spec.add_dependency "multi_xml"
 end
