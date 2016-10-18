@@ -24,6 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "webmock"
   spec.add_development_dependency "pry"
 
-  spec.add_dependency "rest-client", "~> 1.6.7"
   spec.add_dependency "multi_xml"
 end

@@ -1,4 +1,4 @@
-require 'rest-client'
+require 'net/http'
 require 'multi_xml'
 require 'aladtec/event'
 require 'aladtec/member'
@@ -97,9 +97,29 @@ module Aladtec
 
     def request(cmd, options = {})
       post_params = options.merge(cmd: cmd)
-      RestClient.post(endpoint, auth_params.merge(post_params), user_agent: user_agent, accept: :xml)
+      req = Net::HTTP::Post.new(uri)
+      req.set_form_data(auth_params.merge(post_params))
+      req['User-Agent'] = user_agent
+      req['Accept'] = 'application/xml'
+
+      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+        http.use_ssl = true
+        http.request(req)
+      end
+
+      # case res
+      # when Net::HTTPSuccess, Net::HTTPRedirection
+      #   # OK
+      # else
+      #   # ERR
+      # end
     end
     private :request
+
+    def uri
+      @uri ||= URI(endpoint)
+    end
+    private :uri
 
   end
 end
