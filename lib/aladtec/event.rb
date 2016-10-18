@@ -1,14 +1,13 @@
-require 'happymapper'
-
 module Aladtec
   class Event
-    include HappyMapper
+    attr_accessor :title, :description, :location, :begin, :end
 
-    tag 'event'
-    element :title, String
-    element :description, String
-    element :location, String
-    element :begin, Time
-    element :end, Time
+    def initialize(args = {})
+      @title = args["title"]
+      @description = args["description"]
+      @location = args["location"]
+      @begin = Time.parse(args["begin"]) if args["begin"]
+      @end = Time.parse(args["end"]) if args["end"]
+    end
   end
 end

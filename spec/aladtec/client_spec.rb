@@ -5,6 +5,20 @@ describe Aladtec::Client do
     Aladtec::Configuration::VALID_CONFIG_KEYS
   end
 
+  describe "#auth" do
+    let(:auth) { subject.auth("user", "pass") }
+    before(:each) do
+      stub_request(:post, "https://secure.emsmanager.net/api/index.php").
+              with(body: hash_including({cmd: "authenticateMember"})).
+              to_return(body: fixture('authenticate_member.xml'))
+    end
+
+    it "returns an authentication object" do
+      expect(auth).to be_success
+    end
+
+  end
+
   describe "#members" do
     let(:members) { subject.members }
     before(:each) do

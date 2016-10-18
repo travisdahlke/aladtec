@@ -1,14 +1,13 @@
-require 'happymapper'
-
 module Aladtec
   class Authentication
-    include HappyMapper
+    attr_accessor :code, :retry, :message, :member
 
-    tag 'authentication'
-    attribute :code, Integer
-    attribute :retry, Integer
-    element :message, String
-    has_one :member, Member
+    def initialize(args = {})
+      @code = args["code"].to_i
+      @retry = args["retry"]
+      @message = args["message"]
+      @member = args["member"]
+    end
 
     def success?
       self.code == 0
