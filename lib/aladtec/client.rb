@@ -34,7 +34,10 @@ module Aladtec
       end
       response = request(:getEvents, bd: bd, ed: ed)
       body = MultiXml.parse(response.body)
-      body["results"]["events"]["event"].map{|e| Event.new(e)}
+      events = body["results"]["events"]["event"]
+      # Array.wrap
+      events = events.respond_to?(:to_ary) ? events.to_ary : [events]
+      events.map{|e| Event.new(e)}
     end
 
     # Public: Get a list of members
