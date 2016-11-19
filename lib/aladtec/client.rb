@@ -5,7 +5,6 @@ require 'aladtec/member'
 require 'aladtec/authentication'
 require 'aladtec/range'
 require 'aladtec/schedule'
-require 'aladtec/range_denormalizer'
 
 module Aladtec
   class Client
@@ -86,11 +85,6 @@ module Aladtec
       response = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1, sch: sch)
       body = MultiXml.parse(response.body)
       ranges = body["results"]["ranges"]["range"].map{|r| Range.new(r)}
-      denormalize_ranges(ranges)
-    end
-
-    def denormalize_ranges(ranges, klass = RangeDenormalizer)
-      klass.new(schedules: schedules, members: members).denormalize(ranges)
     end
 
     def auth_params
