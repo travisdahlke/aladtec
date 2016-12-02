@@ -4,7 +4,7 @@ module Aladtec
     VALID_OPTIONS_KEYS    = [:acc_id, :acc_key].freeze
     VALID_CONFIG_KEYS     = VALID_CONNECTION_KEYS + VALID_OPTIONS_KEYS
 
-    DEFAULT_ENDPOINT    = 'https://secure.emsmanager.net/api/index.php'
+    DEFAULT_ENDPOINT    = "https://secure.emsmanager.net/api/index.php".freeze
     DEFAULT_METHOD      = :post
     DEFAULT_USER_AGENT  = "Aladtec API Ruby Gem #{Aladtec::VERSION}".freeze
 

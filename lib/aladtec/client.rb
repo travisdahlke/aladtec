@@ -5,9 +5,11 @@ require 'aladtec/member'
 require 'aladtec/authentication'
 require 'aladtec/range'
 require 'aladtec/schedule'
+require 'aladtec/exceptions'
 
 module Aladtec
   class Client
+
 
     attr_accessor *Configuration::VALID_CONFIG_KEYS
 
@@ -25,14 +27,13 @@ module Aladtec
     #           :begin_date - The begin date to return events for (required).
     #           :end_date   - The end date to return events for (optional).
     def events(options = {})
-      bd = options.fetch(:begin_date) { raise "You must supply a :begin_date option!"}
+      bd = options.fetch(:begin_date) { raise ArgumentError, "You must supply a :begin_date option!"}
       ed = options.fetch(:end_date, nil)
       bd = bd.is_a?(Date) ? bd.iso8601 : Date.parse(bd).iso8601
       if ed
         ed = ed.is_a?(Date) ? ed.iso8601 : Date.parse(ed).iso8601
       end
-      response = request(:getEvents, bd: bd, ed: ed)
-      body = MultiXml.parse(response.body)
+      body = request(:getEvents, bd: bd, ed: ed)
       events = body["results"]["events"]["event"]
       # Array.wrap
       events = events.respond_to?(:to_ary) ? events.to_ary : [events]
@@ -42,31 +43,27 @@ module Aladtec
     # Public: Get a list of members
     #
     def members
-      response = request(:getMembers, ia: 'all')
-      body = MultiXml.parse(response.body)
+      body = request(:getMembers, ia: 'all')
       body["results"]["members"]["member"].map{|m| Member.new(m)}
     end
 
     # Public: Authenticate member
     #
     def auth(username, password)
-      response = request(:authenticateMember, memun: username, mempw: password)
-      body = MultiXml.parse(response.body)
+      body = request(:authenticateMember, memun: username, mempw: password)
       Authentication.new(body["results"]["authentication"])
     end
 
     # Public: Get a list of schedules
     #
     def schedules
-      response = request(:getSchedules, isp: 1)
-      body = MultiXml.parse(response.body)
+      body = request(:getSchedules, isp: 1)
       body["results"]["schedules"]["schedule"].map{|m| Schedule.new(m)}
     end
 
     # Public: Get list of members scheduled now
     def scheduled_now(options = {})
-      response = request(:getScheduledTimeNow, {isp: 1}.merge(options))
-      body = MultiXml.parse(response.body)
+      body = request(:getScheduledTimeNow, {isp: 1}.merge(options))
       body["results"]["schedules"]["schedule"].map{|m| Schedule.new(m)}
     end
 
@@ -77,13 +74,12 @@ module Aladtec
     #           :end_time   - The end time to return events for (required).
     #           :sch        - Array of schedule ids to fetch
     def scheduled_range(options = {})
-      bt = options.fetch(:begin_time) { raise "You must supply a :begin_time!"}
-      et = options.fetch(:end_time) { raise "You must supply an :end_time!"}
+      bt = options.fetch(:begin_time) { raise ArgumentError, "You must supply a :begin_time!"}
+      et = options.fetch(:end_time) { raise ArgumentError, "You must supply an :end_time!"}
       sch = Array(options.fetch(:sch, "all")).join(",")
       bt = bt.is_a?(Time) ? bt.clone.utc.iso8601 : Time.parse(bt).utc.iso8601
       et = et.is_a?(Time) ? et.clone.utc.iso8601 : Time.parse(et).utc.iso8601
-      response = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1, sch: sch)
-      body = MultiXml.parse(response.body)
+      body = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1, sch: sch)
       ranges = body["results"]["ranges"]["range"].map{|r| Range.new(r)}
     end
 
@@ -104,12 +100,17 @@ module Aladtec
         http.request(req)
       end
 
-      # case res
-      # when Net::HTTPSuccess, Net::HTTPRedirection
-      #   # OK
-      # else
-      #   # ERR
-      # end
+      case res
+      when Net::HTTPSuccess, Net::HTTPRedirection
+        body = MultiXml.parse(res.body)
+        if body["results"]["errors"]
+          raise Aladtec::Error, body["results"]["errors"]["error"]["__content__"]
+        else
+          return body
+        end
+      else
+        raise Aladtec::Error, res.msg
+      end
     end
     private :request
 
