@@ -34,17 +34,14 @@ module Aladtec
         ed = ed.is_a?(Date) ? ed.iso8601 : Date.parse(ed).iso8601
       end
       body = request(:getEvents, bd: bd, ed: ed)
-      events = body["results"]["events"]["event"]
-      # Array.wrap
-      events = events.respond_to?(:to_ary) ? events.to_ary : [events]
-      events.map{|e| Event.new(e)}
+      fetch_map(body, "events", "event", Event)
     end
 
     # Public: Get a list of members
     #
     def members
       body = request(:getMembers, ia: 'all')
-      body["results"]["members"]["member"].map{|m| Member.new(m)}
+      fetch_map(body, "members", "member", Member)
     end
 
     # Public: Authenticate member
@@ -58,13 +55,13 @@ module Aladtec
     #
     def schedules
       body = request(:getSchedules, isp: 1)
-      body["results"]["schedules"]["schedule"].map{|m| Schedule.new(m)}
+      fetch_map(body, "schedules", "schedule", Schedule)
     end
 
     # Public: Get list of members scheduled now
     def scheduled_now(options = {})
       body = request(:getScheduledTimeNow, {isp: 1}.merge(options))
-      body["results"]["schedules"]["schedule"].map{|m| Schedule.new(m)}
+      fetch_map(body, "schedules", "schedule", Schedule)
     end
 
     # Public: Get list of members scheduled in a time range
@@ -80,8 +77,17 @@ module Aladtec
       bt = bt.is_a?(Time) ? bt.clone.utc.iso8601 : Time.parse(bt).utc.iso8601
       et = et.is_a?(Time) ? et.clone.utc.iso8601 : Time.parse(et).utc.iso8601
       body = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1, sch: sch)
-      ranges = body["results"]["ranges"]["range"].map{|r| Range.new(r)}
+      fetch_map(body, "ranges", "range", Range)
     end
+
+    def fetch_map(body, collection, key, klass)
+      results = body["results"][collection][key] if body["results"][collection]
+      return [] unless results
+      # Array.wrap
+      results = results.respond_to?(:to_ary) ? results.to_ary : [results]
+      results.map{|r| klass.new(r)}
+    end
+    private :fetch_map
 
     def auth_params
       {accid: acc_id, acckey: acc_key}
