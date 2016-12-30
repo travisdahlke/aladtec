@@ -1,4 +1,5 @@
 # Aladtec
+[![Gem Version](https://badge.fury.io/rb/aladtec.svg)](https://badge.fury.io/rb/aladtec)
 [![Build Status](https://travis-ci.org/travisdahlke/aladtec.svg)](https://travis-ci.org/travisdahlke/aladtec)
 [![Inline docs](http://inch-ci.org/github/travisdahlke/aladtec.svg?branch=master)](http://inch-ci.org/github/travisdahlke/aladtec)
 
