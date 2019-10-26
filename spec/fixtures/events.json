@@ -1,0 +1,55 @@
+{
+  "2018-01-16": [
+    {
+      "event_id": 22,
+      "title": "EMS Monthly Meeting",
+      "description": "open to the community",
+      "location": "EMS Station",
+      "start_datetime": "2018-01-16T09:00",
+      "stop_datetime": "2018-01-16T11:00",
+      "start_timestamp": "1547629200",
+      "stop_timestamp": "1547636400",
+      "extends_before": true,
+      "extends_after": false,
+      "schedules": [
+        1,
+        2
+      ],
+      "public": true
+    },
+    {
+      "event_id": 43,
+      "title": "Game Night",
+      "description": "Bring some games and have some fun!",
+      "location": "Event Hall",
+      "start_datetime": "2018-01-16T22:00",
+      "stop_datetime": "2018-01-16T00:00",
+      "start_timestamp": "1526526000",
+      "stop_timestamp": "1526533200",
+      "extends_before": false,
+      "extends_after": false,
+      "schedules": [
+        2
+      ],
+      "public": false
+    }
+  ],
+  "2018-01-17": [
+    {
+      "event_id": 43,
+      "title": "EMS Coverage for Football Game",
+      "description": "High School Football Game",
+      "location": "Ramer Field",
+      "start_datetime": "2018-01-17T18:00",
+      "stop_datetime": "2018-01-17T04:00",
+      "start_timestamp": "1547748000",
+      "stop_timestamp": "1547758800",
+      "extends_before": false,
+      "extends_after": true,
+      "schedules": [
+        2
+      ],
+      "public": false
+    }
+  ]
+}

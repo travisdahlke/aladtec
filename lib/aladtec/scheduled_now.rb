@@ -3,15 +3,14 @@
 require 'dry-initializer'
 
 module Aladtec
-  # Schedule
-  class Schedule
+  # ScheduledNow
+  class ScheduledNow
     extend Dry::Initializer
 
     option :schedule_id, as: :id
-    option :name
     option :positions, [] do
       option :position_id, proc(&:to_i), as: :id
-      option :label
+      option :member_id, proc(&:to_i)
     end
 
     def self.new(params)

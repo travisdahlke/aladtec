@@ -1,0 +1,24 @@
+[
+  {
+    "schedule_id": 1,
+    "positions": [
+      {
+        "position_id": 1,
+        "member_id": 42
+      }
+    ]
+  },
+  {
+    "schedule_id": 2,
+    "positions": [
+      {
+        "position_id": 3,
+        "member_id": 27
+      },
+      {
+        "position_id": 4,
+        "member_id": 22
+      }
+    ]
+  }
+]

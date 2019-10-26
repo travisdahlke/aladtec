@@ -1,18 +1,22 @@
-require 'aladtec/schedule'
-require 'aladtec/position'
-require 'aladtec/member'
+# frozen_string_literal: true
+
+require 'dry-initializer'
 
 module Aladtec
+  # Range
   class Range
-    attr_accessor :schedule, :position, :member, :begin, :end
+    extend Dry::Initializer
 
-    def initialize(args = {})
-      @member = Member.new(args["member"])
-      @position = Position.new(args["position"])
-      @schedule = Schedule.new(args["schedule"])
-      @begin = Time.parse(args["begin"]) if args["begin"]
-      @end = Time.parse(args["end"]) if args["end"]
+    option :schedule_id
+    option :position_id
+    option :member_id
+    option :start_datetime, Time.method(:parse), as: :starts_at
+    option :stop_datetime, Time.method(:parse), as: :ends_at
+    option :extends_before
+    option :extends_after
+
+    def self.new(params)
+      super params.transform_keys(&:to_sym)
     end
-
   end
 end

@@ -1,0 +1,54 @@
+{
+  "2018-05-18" : [
+    {
+      "member_id" : 3,
+      "schedule_id" : 16,
+      "position_id" : 50,
+      "time_type": "Regular",
+      "start_datetime" : "2018-05-18T07:00",
+      "start_timestamp" : 1526644800,
+      "stop_datetime" : "2018-05-19T07:00",
+      "stop_timestamp" : 1526731200,
+      "extends_before": true,
+      "extends_after": false
+    },
+    {
+      "member_id" : 53,
+      "schedule_id" : 16,
+      "position_id" : 51,
+      "time_type": "Regular",
+      "start_datetime" : "2018-05-18T07:00",
+      "start_timestamp" : 1526644800,
+      "stop_datetime" : "2018-05-19T07:00",
+      "stop_timestamp" : 1526731200,
+      "extends_before": false,
+      "extends_after": false
+    }
+  ],
+  "2018-05-19" : [
+    {
+      "member_id" : 52,
+      "schedule_id" : 16,
+      "position_id" : 50,
+      "time_type": "Regular",
+      "start_datetime" : "2018-05-19T09:00",
+      "start_timestamp" : 1526738400,
+      "stop_datetime" : "2018-05-19T17:00",
+      "stop_timestamp" : 1526767200,
+      "extends_before": false,
+      "extends_after": false
+    },
+    {
+      "member_id" : 96,
+      "schedule_id" : 16,
+      "position_id" : 53,
+      "time_type": "Regular",
+      "start_datetime" : "2018-05-19T09:00",
+      "start_timestamp" : 1526738400,
+      "stop_datetime" : "2018-05-19T17:00",
+      "stop_timestamp" : 1526767200,
+      "extends_before": false,
+      "extends_after": false
+    }
+  ]
+}

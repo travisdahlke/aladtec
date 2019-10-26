@@ -1,0 +1,32 @@
+[
+  {
+    "schedule_id": 1,
+    "name": "Ambulance 1",
+    "is_archived": false,
+    "positions": [
+      {
+        "position_id": 1,
+        "label": "Driver"
+      },
+      {
+        "position_id": 2,
+        "label": "Firefighter"
+      }
+    ]
+  },
+  {
+    "schedule_id": 2,
+    "name": "Fire Crew 1",
+    "is_archived": false,
+    "positions": [
+      {
+        "position_id": 3,
+        "label": "Slot 1"
+      },
+      {
+        "position_id": 4,
+        "label": "Slot 2"
+      }
+    ]
+  }
+]

@@ -1,67 +1,70 @@
-require 'net/http'
-require 'multi_xml'
+# frozen_string_literal: true
+
+require 'http'
 require 'aladtec/event'
 require 'aladtec/member'
-require 'aladtec/authentication'
 require 'aladtec/range'
 require 'aladtec/schedule'
+require 'aladtec/scheduled_now'
 require 'aladtec/exceptions'
 
 module Aladtec
+  # Aladtec API Client
   class Client
+    attr_reader :config
+    def initialize(args = {})
+      @config = Aladtec.config.dup.update(args)
+    end
 
+    def configure
+      yield config
+    end
 
-    attr_accessor *Configuration::VALID_CONFIG_KEYS
-
-    def initialize(options={})
-      merged_options = Aladtec.options.merge(options)
-
-      Configuration::VALID_CONFIG_KEYS.each do |key|
-        public_send("#{key}=", merged_options[key])
-      end
+    def authenticate
+      body = { grant_type: 'client_credentials', client_id: config.client_id,
+               client_secret: config.client_secret }
+      response = HTTP.post(URI.join(config.endpoint, 'oauth/token'), json: body)
+      body = response.parse
+      @auth_token = body.fetch('token')
+      @auth_expiration = Time.at body.fetch('expires')
+      response.status.success?
     end
 
     # Public: Get a list of events for a date or range of dates
     #
     # options - The Hash options used to refine the selection (default: {}):
-    #           :begin_date - The begin date to return events for (required).
-    #           :end_date   - The end date to return events for (optional).
+    #           :begin_time - The begin date to return events for (required).
+    #           :end_time   - The end date to return events for (required).
     def events(options = {})
-      bd = options.fetch(:begin_date) { raise ArgumentError, "You must supply a :begin_date option!"}
-      ed = options.fetch(:end_date, nil)
-      bd = bd.is_a?(Date) ? bd.iso8601 : Date.parse(bd).iso8601
-      if ed
-        ed = ed.is_a?(Date) ? ed.iso8601 : Date.parse(ed).iso8601
+      bd = options.fetch(:begin_time) do
+        raise ArgumentError, 'You must supply a :begin_time option!'
       end
-      body = request(:getEvents, bd: bd, ed: ed)
-      fetch_map(body, "events", "event", Event)
+      ed = options.fetch(:end_time) do
+        raise ArgumentError, 'You must supply a :end_time option!'
+      end
+      events = request('events', range_start: format_time(bd),
+                                 range_stop: format_time(ed))
+      events.values.flatten.map { |event| Event.new(event) }
     end
 
     # Public: Get a list of members
     #
     def members
-      body = request(:getMembers, ia: 'all')
-      fetch_map(body, "members", "member", Member)
-    end
-
-    # Public: Authenticate member
-    #
-    def auth(username, password)
-      body = request(:authenticateMember, memun: username, mempw: password)
-      Authentication.new(body["results"]["authentication"])
+      res = request('members', include_attributes: true)
+      res.map { |member| Member.new(member) }
     end
 
     # Public: Get a list of schedules
     #
     def schedules
-      body = request(:getSchedules, isp: 1)
-      fetch_map(body, "schedules", "schedule", Schedule)
+      res = request('schedules')
+      res.map { |schedule| Schedule.new(schedule) }
     end
 
     # Public: Get list of members scheduled now
     def scheduled_now(options = {})
-      body = request(:getScheduledTimeNow, {isp: 1}.merge(options))
-      fetch_map(body, "schedules", "schedule", Schedule)
+      res = request('scheduled-time/members-scheduled-now', options)
+      res.map { |schedule| ScheduledNow.new(schedule) }
     end
 
     # Public: Get list of members scheduled in a time range
@@ -71,59 +74,31 @@ module Aladtec
     #           :end_time   - The end time to return events for (required).
     #           :sch        - Array of schedule ids to fetch
     def scheduled_range(options = {})
-      bt = options.fetch(:begin_time) { raise ArgumentError, "You must supply a :begin_time!"}
-      et = options.fetch(:end_time) { raise ArgumentError, "You must supply an :end_time!"}
-      sch = Array(options.fetch(:sch, "all")).join(",")
-      bt = bt.is_a?(Time) ? bt.clone.utc.iso8601 : Time.parse(bt).utc.iso8601
-      et = et.is_a?(Time) ? et.clone.utc.iso8601 : Time.parse(et).utc.iso8601
-      body = request(:getScheduledTimeRanges, bt: bt, et: et, isp: 1, sch: sch)
-      fetch_map(body, "ranges", "range", Range)
-    end
-
-    def fetch_map(body, collection, key, klass)
-      results = body["results"][collection][key] if body["results"][collection]
-      return [] unless results
-      # Array.wrap
-      results = results.respond_to?(:to_ary) ? results.to_ary : [results]
-      results.map{|r| klass.new(r)}
-    end
-    private :fetch_map
-
-    def auth_params
-      {accid: acc_id, acckey: acc_key}
-    end
-    private :auth_params
-
-    def request(cmd, options = {})
-      post_params = options.merge(cmd: cmd)
-      req = Net::HTTP::Post.new(uri)
-      req.set_form_data(auth_params.merge(post_params))
-      req['User-Agent'] = user_agent
-      req['Accept'] = 'application/xml'
-
-      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-        http.use_ssl = true
-        http.request(req)
+      bt = options.fetch(:begin_time) do
+        raise ArgumentError, 'You must supply a :begin_time!'
       end
-
-      case res
-      when Net::HTTPSuccess, Net::HTTPRedirection
-        body = MultiXml.parse(res.body)
-        if body["results"]["errors"]
-          raise Aladtec::Error, body["results"]["errors"]["error"]["__content__"]
-        else
-          return body
-        end
-      else
-        raise Aladtec::Error, res.msg
+      et = options.fetch(:end_time) do
+        raise ArgumentError, 'You must supply an :end_time!'
       end
+      # sch = Array(options.fetch(:sch, "all")).join(",")
+      scheduled_time = request('scheduled-time', range_start: format_time(bt),
+                                                 range_stop: format_time(et))
+      scheduled_time.values.flatten.map { |range| Range.new(range) }
     end
-    private :request
 
-    def uri
-      @uri ||= URI(endpoint)
+    private
+
+    def request(path, options = {})
+      res = HTTP[user_agent: config.user_agent]
+            .auth("Bearer #{@auth_token}")
+            .get(URI.join(config.endpoint, path), params: options)
+      raise Aladtec::Error, res.status.reason unless res.status.success?
+
+      res.parse
     end
-    private :uri
 
+    def format_time(time)
+      (time.is_a?(Time) ? time : Time.parse(time)).strftime('%FT%R')
+    end
   end
 end

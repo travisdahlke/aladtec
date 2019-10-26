@@ -1,0 +1,39 @@
+[
+  {
+    "member_id": 42,
+    "is_active": true,
+    "name": "Ed Mercer",
+    "attributes": [
+      {
+        "attribute_id": 1,
+        "value": "Ed"
+      },
+      {
+        "attribute_id": 3,
+        "value": "Mercer"
+      },
+      {
+        "attribute_id": 19,
+        "value": [
+          "Morning",
+          "Evening"
+        ]
+      }
+    ]
+  },
+  {
+    "member_id": 2,
+    "is_active": false,
+    "name": "Joyner Lucas",
+    "attributes": [
+      {
+        "attribute_id": 1,
+        "value": "Joyner"
+      },
+      {
+        "attribute_id": 3,
+        "value": "Lucas"
+      }
+    ]
+  }
+]
