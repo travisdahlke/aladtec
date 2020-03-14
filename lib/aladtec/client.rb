@@ -13,7 +13,9 @@ module Aladtec
   class Client
     attr_reader :config
     def initialize(args = {})
-      @config = Aladtec.config.dup.update(args)
+      @config = Aladtec.config.dup.tap do |c|
+        c.update(args)
+      end
     end
 
     def configure
@@ -21,6 +23,9 @@ module Aladtec
     end
 
     def authenticate
+      if config.client_id.nil? || config.client_secret.nil? 
+        raise Aladtec::Error, 'client_id and client_secret are required'
+      end
       body = { grant_type: 'client_credentials', client_id: config.client_id,
                client_secret: config.client_secret }
       response = HTTP.post(URI.join(config.endpoint, 'oauth/token'), json: body)
@@ -72,7 +77,6 @@ module Aladtec
     # options - The Hash options used to refine the selection (default: {}):
     #           :begin_time - The begin time to return events for (required).
     #           :end_time   - The end time to return events for (required).
-    #           :sch        - Array of schedule ids to fetch
     def scheduled_range(options = {})
       bt = options.fetch(:begin_time) do
         raise ArgumentError, 'You must supply a :begin_time!'
@@ -80,7 +84,6 @@ module Aladtec
       et = options.fetch(:end_time) do
         raise ArgumentError, 'You must supply an :end_time!'
       end
-      # sch = Array(options.fetch(:sch, "all")).join(",")
       scheduled_time = request('scheduled-time', range_start: format_time(bt),
                                                  range_stop: format_time(et))
       scheduled_time.values.flatten.map { |range| Range.new(range) }
@@ -89,6 +92,9 @@ module Aladtec
     private
 
     def request(path, options = {})
+      if auth_expired? && !authenticate
+        raise Aladtec::Error, 'authentication failed'
+      end
       res = HTTP[user_agent: config.user_agent]
             .auth("Bearer #{@auth_token}")
             .get(URI.join(config.endpoint, path), params: options)
@@ -99,6 +105,10 @@ module Aladtec
 
     def format_time(time)
       (time.is_a?(Time) ? time : Time.parse(time)).strftime('%FT%R')
+    end
+
+    def auth_expired?
+      !@auth_token || !@auth_expiration || Time.now >= @auth_expiration
     end
   end
 end
