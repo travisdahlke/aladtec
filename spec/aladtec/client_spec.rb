@@ -5,6 +5,18 @@ require_relative File.join('..', 'spec_helper')
 describe Aladtec::Client do
   let(:start_time) { Time.now.strftime('%FT%R') }
   let(:end_time) { (Time.now + 60 * 60 * 24).strftime('%FT%R') }
+  let(:client_id) { 'foo' }
+  let(:client_secret) { 'bar' }
+
+  before(:each) do
+    subject.configure do |config|
+      config.client_id = client_id
+      config.client_secret = client_secret
+    end
+    stub_request(:post, 'https://secure.aladtec.com/example/api/oauth/token')
+      .to_return(body: { token: 'baz', expires: (Time.now + 3600).to_i }.to_json,
+                  headers: { 'Content-Type': 'application/json' })
+  end
 
   describe '#members' do
     let(:members) { subject.members }

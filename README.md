@@ -24,8 +24,8 @@ Or install it yourself as:
 Configure the gem with your credentials:
 
     Aladtec.configure do |config|
-      config.acc_key = ENV['ALADTEC_ACC_KEY']
-      config.acc_id = ENV['ALADTEC_ACC_ID']
+      config.client_id = ENV['ALADTEC_CLIENT_ID']
+      config.client_secret = ENV['ALADTEC_CLIENT_SECRET']
       config.endpoint = ENV['ALADTEC_ENDPOINT']
     end
 
@@ -36,11 +36,19 @@ Get members
 
 Get events
 
-    client.events(begin_date: Date.today)
+    client.events(begin_time: Time.now, end_time: Time.now + 60 * 60 * 24)
 
 Get schedules
 
     client.schedules
+
+Get scheduled time ranges
+
+    client.scheduled_range(begin_time: Time.new(2019,10,1), end_time: Time.new(2019,10,31))
+
+Get members scheduled now
+
+    client.scheduled_now
 
 Refer to the [documentation](http://www.rubydoc.info/github/travisdahlke/aladtec) for more detailed usage.
 
