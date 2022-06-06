@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'webmock'
 
-  spec.add_dependency 'dry-configurable'
+  spec.add_dependency 'dry-configurable', '~> 0.11', '>= 0.11.4'
   spec.add_dependency 'dry-initializer'
   spec.add_dependency 'http'
 end

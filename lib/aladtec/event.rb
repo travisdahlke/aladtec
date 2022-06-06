@@ -15,7 +15,7 @@ module Aladtec
     option :stop_datetime, Time.method(:parse), as: :ends_at, optional: true
 
     def self.new(params)
-      super params.transform_keys(&:to_sym)
+      super **params.transform_keys(&:to_sym)
     end
   end
 end

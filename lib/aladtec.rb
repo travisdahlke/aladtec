@@ -8,8 +8,8 @@ require 'aladtec/client'
 module Aladtec
   extend Dry::Configurable
 
-  setting :endpoint, 'https://secure.aladtec.com/example/api/'
-  setting :user_agent, "Aladtec API Ruby Gem #{Aladtec::VERSION}"
+  setting :endpoint, default: 'https://secure.aladtec.com/example/api/'
+  setting :user_agent, default: "Aladtec API Ruby Gem #{Aladtec::VERSION}"
   setting :client_id
   setting :client_secret
 end

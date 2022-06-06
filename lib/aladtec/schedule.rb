@@ -15,7 +15,7 @@ module Aladtec
     end
 
     def self.new(params)
-      super params.transform_keys(&:to_sym)
+      super **params.transform_keys(&:to_sym)
     end
   end
 end
