@@ -1,24 +1,29 @@
-[
-  {
-    "schedule_id": 1,
-    "positions": [
-      {
-        "position_id": 1,
-        "member_id": 42
-      }
-    ]
-  },
-  {
-    "schedule_id": 2,
-    "positions": [
-      {
-        "position_id": 3,
-        "member_id": 27
-      },
-      {
-        "position_id": 4,
-        "member_id": 22
-      }
-    ]
+{
+  "data": [
+    {
+      "schedule_id": 1,
+      "positions": [
+        {
+          "position_id": 1,
+          "member_id": 42
+        }
+      ]
+    },
+    {
+      "schedule_id": 2,
+      "positions": [
+        {
+          "position_id": 3,
+          "member_id": 27
+        },
+        {
+          "position_id": 4,
+          "member_id": 22
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "generated_at_datetime": "2022-01-01T07:42:33-06:00"
   }
-]
+}

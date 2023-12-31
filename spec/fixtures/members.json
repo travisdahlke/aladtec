@@ -1,39 +1,43 @@
-[
-  {
-    "member_id": 42,
-    "is_active": true,
-    "name": "Ed Mercer",
-    "attributes": [
-      {
-        "attribute_id": 1,
-        "value": "Ed"
-      },
-      {
-        "attribute_id": 3,
-        "value": "Mercer"
-      },
-      {
-        "attribute_id": 19,
-        "value": [
-          "Morning",
-          "Evening"
-        ]
-      }
-    ]
-  },
-  {
-    "member_id": 2,
-    "is_active": false,
-    "name": "Joyner Lucas",
-    "attributes": [
-      {
-        "attribute_id": 1,
-        "value": "Joyner"
-      },
-      {
-        "attribute_id": 3,
-        "value": "Lucas"
-      }
-    ]
+{
+  "data": [
+    {
+      "member_id": 3,
+      "is_active": true,
+      "first_name": "John",
+      "last_name": "Smith",
+      "login": "johnsmith",
+      "primary_email": "jsmith@company.com",
+      "secondary_emails": [
+        "jsmith@example.com"
+      ],
+      "employee_type_id": 7,
+      "work_group_id": 5,
+      "date_hired": "2019-01-01",
+      "schedule_ids": [
+        1,
+        2
+      ],
+      "position_qualification_ids": [
+        1,
+        2,
+        3
+      ],
+      "custom_attributes": [
+        {
+          "attribute_id": 11,
+          "value": ""
+        },
+        {
+          "attribute_id": 10,
+          "value": [
+            2,
+            3
+          ]
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "generated_at_datetime": "2022-01-01T07:42:33-06:00"
   }
-]
+}

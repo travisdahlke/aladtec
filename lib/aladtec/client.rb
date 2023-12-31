@@ -30,8 +30,8 @@ module Aladtec
                client_secret: config.client_secret }
       response = HTTP.post(URI.join(config.endpoint, 'oauth/token'), json: body)
       body = response.parse
-      @auth_token = body.fetch('token')
-      @auth_expiration = Time.at body.fetch('expires')
+      @auth_token = body.fetch('access_token')
+      @auth_expiration = Time.now + body.fetch('expires_in')
       response.status.success?
     end
 
@@ -47,29 +47,29 @@ module Aladtec
       ed = options.fetch(:end_time) do
         raise ArgumentError, 'You must supply a :end_time option!'
       end
-      events = request('events', range_start: format_time(bd),
-                                 range_stop: format_time(ed))
-      events.values.flatten.map { |event| Event.new(event) }
+      events = request('events', range_start_datetime: format_time(bd),
+                                 range_stop_datetime: format_time(ed))
+      events['data'].flat_map { |dates| dates['event_records'] }.map { |event| Event.new(event) }
     end
 
     # Public: Get a list of members
     #
     def members
-      res = request('members', include_attributes: true)
-      res.map { |member| Member.new(member) }
+      res = request('members')
+      res['data'].map { |member| Member.new(member) }
     end
 
     # Public: Get a list of schedules
     #
     def schedules
       res = request('schedules')
-      res.map { |schedule| Schedule.new(schedule) }
+      res['data'].map { |schedule| Schedule.new(schedule) }
     end
 
     # Public: Get list of members scheduled now
     def scheduled_now(options = {})
       res = request('scheduled-time/members-scheduled-now', options)
-      res.map { |schedule| ScheduledNow.new(schedule) }
+      res['data'].map { |schedule| ScheduledNow.new(schedule) }
     end
 
     # Public: Get list of members scheduled in a time range
@@ -84,9 +84,9 @@ module Aladtec
       et = options.fetch(:end_time) do
         raise ArgumentError, 'You must supply an :end_time!'
       end
-      scheduled_time = request('scheduled-time', range_start: format_time(bt),
-                                                 range_stop: format_time(et))
-      scheduled_time.values.flatten.map { |range| Range.new(range) }
+      scheduled_time = request('scheduled-time', range_start_datetime: format_time(bt),
+                                                 range_stop_datetime: format_time(et))
+      scheduled_time['data'].flat_map { |date| date['time_records'] }.map { |range| Range.new(range) }
     end
 
     private
@@ -104,7 +104,7 @@ module Aladtec
     end
 
     def format_time(time)
-      (time.is_a?(Time) ? time : Time.parse(time)).strftime('%FT%R')
+      (time.is_a?(Time) ? time : Time.parse(time)).strftime('%FT%T%:z')
     end
 
     def auth_expired?

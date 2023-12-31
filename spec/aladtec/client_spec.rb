@@ -3,47 +3,47 @@
 require_relative File.join('..', 'spec_helper')
 
 describe Aladtec::Client do
-  let(:start_time) { Time.now.strftime('%FT%R') }
-  let(:end_time) { (Time.now + 60 * 60 * 24).strftime('%FT%R') }
+  let(:start_time) { Time.now.strftime('%FT%T%:z') }
+  let(:end_time) { (Time.now + 60 * 60 * 24).strftime('%FT%T%:z') }
   let(:client_id) { 'foo' }
   let(:client_secret) { 'bar' }
+  let(:endpoint) { subject.config.endpoint }
 
   before(:each) do
     subject.configure do |config|
       config.client_id = client_id
       config.client_secret = client_secret
     end
-    stub_request(:post, 'https://secure.aladtec.com/example/api/oauth/token')
-      .to_return(body: { token: 'baz', expires: (Time.now + 3600).to_i }.to_json,
+    stub_request(:post, URI.join(endpoint, 'oauth/token'))
+      .to_return(body: { "access_token": "<string>", "token_type": "Bearer", "expires_in": 3600, "scope": "<string>" }.to_json,
                   headers: { 'Content-Type': 'application/json' })
   end
 
   describe '#members' do
     let(:members) { subject.members }
     before(:each) do
-      stub_request(:get, 'https://secure.aladtec.com/example/api/members')
-        .with(query: { include_attributes: true })
+      stub_request(:get, URI.join(endpoint, 'members'))
         .to_return(body: fixture('members.json'),
                    headers: { 'Content-Type': 'application/json' })
     end
     it 'returns a list of members' do
-      expect(members.length).to eq(2)
+      expect(members.length).to eq(1)
     end
 
     let(:ed) { members.first }
     it 'returns members with names' do
-      expect(ed.name).to eq('Ed Mercer')
+      expect(ed.name).to eq('John Smith')
     end
     it 'returns members with ids' do
-      expect(ed.id).to eq(42)
+      expect(ed.id).to eq(3)
     end
   end
 
   describe '#events' do
     let(:events) { subject.events(begin_time: start_time, end_time: end_time) }
     before(:each) do
-      stub_request(:get, 'https://secure.aladtec.com/example/api/events')
-        .with(query: { range_start: start_time, range_stop: end_time })
+      stub_request(:get, URI.join(endpoint, 'events'))
+        .with(query: { range_start_datetime: start_time, range_stop_datetime: end_time })
         .to_return(body: fixture('events.json'),
                    headers: { 'Content-Type': 'application/json' })
     end
@@ -57,7 +57,7 @@ describe Aladtec::Client do
     end
 
     it 'returns events with a description' do
-      expect(event.description).to eq('open to the community')
+      expect(event.description).to eq('Open to the community')
     end
 
     it 'returns events with location' do
@@ -65,18 +65,18 @@ describe Aladtec::Client do
     end
 
     it 'returns events with begin date' do
-      expect(event.starts_at).to eq(Time.parse('2018-01-16T09:00'))
+      expect(event.starts_at).to eq(Time.parse('2018-01-16T09:00-05:00'))
     end
 
     it 'returns events with end date' do
-      expect(event.ends_at).to eq(Time.parse('2018-01-16T11:00'))
+      expect(event.ends_at).to eq(Time.parse('2018-01-16T11:00-05:00'))
     end
   end
 
   describe '#schedules' do
     let(:schedules) { subject.schedules }
     before(:each) do
-      stub_request(:get, 'https://secure.aladtec.com/example/api/schedules')
+      stub_request(:get, URI.join(endpoint, 'schedules'))
         .to_return(body: fixture('schedules.json'),
                    headers: { 'Content-Type': 'application/json' })
     end
@@ -97,7 +97,7 @@ describe Aladtec::Client do
   describe '#scheduled_now' do
     let(:schedules) { subject.scheduled_now }
     before(:each) do
-      stub_request(:get, 'https://secure.aladtec.com/example/api/scheduled-time/members-scheduled-now')
+      stub_request(:get, URI.join(endpoint, 'scheduled-time/members-scheduled-now'))
         .to_return(body: fixture('scheduled_time_now.json'),
                    headers: { 'Content-Type': 'application/json' })
     end
@@ -121,8 +121,8 @@ describe Aladtec::Client do
                               end_time: end_time)
     end
     before(:each) do
-      stub_request(:get, 'https://secure.aladtec.com/example/api/scheduled-time')
-        .with(query: { range_start: start_time, range_stop: end_time })
+      stub_request(:get, URI.join(endpoint, 'scheduled-time'))
+        .with(query: { range_start_datetime: start_time, range_stop_datetime: end_time })
         .to_return(body: fixture('scheduled_time.json'),
                    headers: { 'Content-Type': 'application/json' })
     end

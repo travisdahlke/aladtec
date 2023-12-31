@@ -1,32 +1,47 @@
-[
-  {
-    "schedule_id": 1,
-    "name": "Ambulance 1",
-    "is_archived": false,
-    "positions": [
-      {
-        "position_id": 1,
-        "label": "Driver"
-      },
-      {
-        "position_id": 2,
-        "label": "Firefighter"
-      }
-    ]
-  },
-  {
-    "schedule_id": 2,
-    "name": "Fire Crew 1",
-    "is_archived": false,
-    "positions": [
-      {
-        "position_id": 3,
-        "label": "Slot 1"
-      },
-      {
-        "position_id": 4,
-        "label": "Slot 2"
-      }
-    ]
+{
+  "data": [
+    {
+      "schedule_id": 1,
+      "name": "Ambulance 1",
+      "is_archived": false,
+      "order": "1,",
+      "positions": [
+        {
+          "position_id": 1,
+          "position_qualification_id": 1,
+          "label": "Driver",
+          "order": 1
+        },
+        {
+          "position_id": 2,
+          "position_qualification_id": 3,
+          "label": "EMT",
+          "order": 2
+        }
+      ]
+    },
+    {
+      "schedule_id": 2,
+      "name": "Fire Crew 1",
+      "is_archived": false,
+      "order": 2,
+      "positions": [
+        {
+          "position_id": 3,
+          "position_qualification_id": 2,
+          "label": "Firefighter",
+          "order": 1
+        },
+        {
+          "position_id": 4,
+          "position_qualification_id": 2,
+          "label": "Firefighter",
+          "order": 2
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "generated_at_datetime": "2022-01-01T07:42:33-06:00"
   }
-]
+}
