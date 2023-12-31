@@ -152,7 +152,7 @@ describe Aladtec::Client do
     end
   end
 
-  let(:valid_keys) { Aladtec.settings }
+  let(:valid_keys) { Aladtec.settings.keys }
   context 'with module configuration' do
     before(:each) do
       Aladtec.configure do |config|

@@ -22,13 +22,13 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 2.0'
+  spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'webmock'
 
-  spec.add_dependency 'dry-configurable', '~> 0.11', '>= 0.11.4'
+  spec.add_dependency 'dry-configurable'
   spec.add_dependency 'dry-initializer'
   spec.add_dependency 'http'
 end

@@ -8,7 +8,7 @@ describe Aladtec do
   end
 
   describe '.configure' do
-    Aladtec.settings.each do |key|
+    Aladtec.settings.keys.each do |key|
       it "should set the #{key}" do
         Aladtec.configure do |config|
           config.public_send("#{key}=", key)
