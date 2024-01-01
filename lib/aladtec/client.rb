@@ -13,9 +13,7 @@ module Aladtec
   class Client
     attr_reader :config
     def initialize(args = {})
-      @config = Aladtec.config.dup.tap do |c|
-        c.update(args)
-      end
+      @config = Aladtec.config.dup.update(args)
     end
 
     def configure
@@ -52,11 +50,12 @@ module Aladtec
       events['data'].flat_map { |dates| dates['event_records'] }.map { |event| Event.new(event) }
     end
 
+    MAX = 1000
+
     # Public: Get a list of members
     #
     def members
-      res = request('members')
-      res['data'].map { |member| Member.new(member) }
+      paginated_get('members', {}, self).map { |member| Member.new(member) }
     end
 
     # Public: Get a list of schedules
@@ -89,8 +88,6 @@ module Aladtec
       scheduled_time['data'].flat_map { |date| date['time_records'] }.map { |range| Range.new(range) }
     end
 
-    private
-
     def request(path, options = {})
       if auth_expired? && !authenticate
         raise Aladtec::Error, 'authentication failed'
@@ -103,12 +100,61 @@ module Aladtec
       res.parse
     end
 
+    private
+
     def format_time(time)
       (time.is_a?(Time) ? time : Time.parse(time)).strftime('%FT%T%:z')
     end
 
     def auth_expired?
       !@auth_token || !@auth_expiration || Time.now >= @auth_expiration
+    end
+
+    def paginated_get(path, params, client)
+      Cursor.new(path, params, client)
+    end
+
+    class Cursor
+      include Enumerable
+
+      def initialize(path, options = {}, client)
+        @path       = path
+        @params     = options.dup
+        @client     = client
+
+        @collection = []
+        @offset     = @params.fetch(:offset, nil)
+        @limit      = @params.fetch(:limit, 50)
+      end
+
+      def each(start = 0, &block)
+        return to_enum(:each, start) unless block
+    
+        Array(@collection[start..]).each(&block)
+    
+        unless finished?
+          start = [@collection.size, start].max
+    
+          fetch_next_page
+    
+          each(start, &block)
+        end
+      end
+
+      private
+
+      def fetch_next_page
+        response              = @client.request(@path, @params.merge(offset: @collection.length, limit: @limit))
+        data = response['data']
+        @last_response_empty  = data.empty? || data.length < @limit
+        @collection           += data
+      end
+    
+      MAX = 1000
+
+      def finished?
+        @last_response_empty || @collection.length >= MAX
+      end
     end
   end
 end

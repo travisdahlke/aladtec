@@ -23,6 +23,7 @@ describe Aladtec::Client do
     let(:members) { subject.members }
     before(:each) do
       stub_request(:get, URI.join(endpoint, 'members'))
+        .with(query: { offset: 0, limit: 50 })
         .to_return(body: fixture('members.json'),
                    headers: { 'Content-Type': 'application/json' })
     end
